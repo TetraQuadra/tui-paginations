@@ -1,3 +1,20 @@
+import { UnsplashAPI } from './UnsplashAPI';
+import refs from './refs';
+import createGalleryCard from '../templates/gallery-card.hbs';
+
+const unsplashApi = new UnsplashAPI(12);
+
+function onRenderPage(page) {
+  unsplashApi.getPopularPhotos(page)
+    .then(resp => {
+    refs.gallery.innerHTML = createGalleryCard(resp.results);
+    }).catch(error => {
+      console.log(error.message)
+    })
+
+}
+
+onRenderPage();
 /**
   |============================
   | Імпортуй свою API і напиши фу-цію "onRenderPage()", яка буде робити запит на сервер і вона ж відрендерить розмітку. Пробуй використовувати модульний підхід

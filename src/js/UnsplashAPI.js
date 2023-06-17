@@ -1,5 +1,26 @@
-const BASE_URL = 'https://api.unsplash.com';
-const API_KEY = 'LxvKVGJqiSe6NcEVZOaLXC-f2JIIWZaq_o0WrF8mwJc';
+export class UnsplashAPI {
+  #BASE_URL = 'https://api.unsplash.com/';
+  #API_KEY = 'LxvKVGJqiSe6NcEVZOaLXC-f2JIIWZaq_o0WrF8mwJc';
+  #PHOTO_PATH = 'search/photos';
+
+  constructor(perPage) {
+    this.perPage = perPage;
+  }
+  getPopularPhotos(page) {
+    return fetch(
+      `${this.#BASE_URL}${
+        this.#PHOTO_PATH
+      }?page=${page}&query=random&per_page=${this.perPage}&client_id=${
+        this.#API_KEY
+      }`
+    ).then(resp => {
+      if (!resp.ok) {
+        throw new Error(resp.status);
+      }
+      return resp.json();
+    });
+  }
+}
 
 /**
   |============================
