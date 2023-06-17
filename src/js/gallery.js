@@ -92,6 +92,11 @@ onRenderPage(page);
       return alert(`По вашому запиту ${searchQury} нічого не знайдено`);
 
     }
+
+
+
+
+    
     refs.gallery.innerHTML = createGalleryCard(resp.data.results);
     pagination.reset(resp.data.total);
     pagination.off('afterMove', createPopularPagination);
