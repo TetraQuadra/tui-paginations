@@ -1,24 +1,54 @@
+import axios, { Axios } from "axios";
+import { random } from "lodash";
+
 export class UnsplashAPI {
   #BASE_URL = 'https://api.unsplash.com/';
   #API_KEY = 'LxvKVGJqiSe6NcEVZOaLXC-f2JIIWZaq_o0WrF8mwJc';
   #PHOTO_PATH = 'search/photos';
+  #query = "";
 
   constructor(perPage) {
     this.perPage = perPage;
   }
-  getPopularPhotos(page) {
-    return fetch(
-      `${this.#BASE_URL}${
-        this.#PHOTO_PATH
-      }?page=${page}&query=random&per_page=${this.perPage}&client_id=${
-        this.#API_KEY
-      }`
-    ).then(resp => {
-      if (!resp.ok) {
-        throw new Error(resp.status);
+  // getPopularPhotos(page) {
+  //   return fetch(
+  //     `${this.#BASE_URL}${
+  //       this.#PHOTO_PATH
+  //     }?page=${page}&query=random&per_page=${this.perPage}&client_id=${
+  //       this.#API_KEY
+  //     }`
+  //   ).then(resp => {
+  //     if (!resp.ok) {
+  //       throw new Error(resp.status);
+  //     }
+  //     return resp.json();
+  //   });
+  // }
+
+  getPopularPhotos(page){
+    return axios.get( `${this.#BASE_URL}${this.#PHOTO_PATH}`, {
+      params: {
+        query: 'random',
+        page,
+        per_page: this.perPage,
+        client_id: this.#API_KEY,
       }
-      return resp.json();
-    });
+    })
+  }
+
+  getPhotosByQuery(page){
+    return axios.get( `${this.#BASE_URL}${this.#PHOTO_PATH}`, {
+      params: {
+        query: this.#query,
+        page,
+        per_page: this.perPage,
+        client_id: this.#API_KEY,
+      }
+    })
+  }
+
+  set query(newQuery) {
+    this.#query = newQuery;
   }
 }
 
