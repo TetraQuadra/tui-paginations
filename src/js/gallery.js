@@ -3,6 +3,7 @@ import refs from './refs';
 import createGalleryCard from '../templates/gallery-card.hbs';
 import Pagination from 'tui-pagination';
 import 'tui-pagination/dist/tui-pagination.css';
+import { assignWith } from 'lodash';
 
 const unsplashApi = new UnsplashAPI(12);
 
@@ -18,29 +19,109 @@ const pagination = new Pagination(refs.container, options);
 const page = pagination.getCurrentPage()
 
 
-function onRenderPage(page) {
-  unsplashApi.getPopularPhotos(page)
-    .then(resp => {
-      refs.gallery.innerHTML = createGalleryCard(resp.results);
-      pagination.reset(resp.total);
-      pagination.on('afterMove', createPopularPagination);
-    }).catch(error => {
-      console.log(error.message)
-    })
+// function onRenderPage(page) {
+//   unsplashApi.getPopularPhotos(page)
+//     .then(resp => {
+//       refs.gallery.innerHTML = createGalleryCard(resp.results);
+//       pagination.reset(resp.total);
+//       pagination.on('afterMove', createPopularPagination);
+//     }).catch(error => {
+//       console.log(error.message)
+//     })
+
+// }
+
+async function onRenderPage(page) {
+  try {
+    const resp = await unsplashApi.getPopularPhotos(page)
+ 
+    refs.gallery.innerHTML = createGalleryCard(resp.data.results);
+    pagination.reset(resp.data.total);
+    pagination.on('afterMove', createPopularPagination);
+
+    refs.container.classList.remove('is-hidden');
+  }catch(error) {
+    console.log(error);
+  }  
+
+  
+  
 
 }
 
-function createPopularPagination(e) {
+async function createPopularPagination(e) {
   const currentPage = e.page;
 
-  unsplashApi.getPopularPhotos(currentPage)
-    .then((resp) => {
-      refs.gallery.innerHTML = createGalleryCard(resp.results);
-    }).catch((err)=>{console.log(err);})
+  try {
+    const resp = await unsplashApi.getPopularPhotos(currentPage)
+ 
+    refs.gallery.innerHTML = createGalleryCard(resp.data.results);
+    
+  }catch(error) {
+    console.log(error);
+  } 
 
 }
 
 onRenderPage(page);
+
+// Par 2
+
+ refs.form.addEventListener("submit", onSearchSubmit);
+
+ async function onSearchSubmit(evt) {
+  evt.preventDefault();
+  const searchQury = evt.currentTarget.elements['user-search-query'].value.trim();
+   
+  if (!searchQury){
+    return alert('Empity Query');
+  }
+  unsplashApi.query = searchQury;
+  try {
+    const resp = await unsplashApi.getPhotosByQuery(page)
+ 
+    if(resp.data.total <= unsplashApi.perPage){
+      refs.container.classList.add('is-hidden');
+    } else {
+      refs.container.classList.remove('is-hidden');
+    }
+
+    if (resp.data.results.length === 0) {
+      refs.gallery.innerHTML = "";
+      refs.form.reset();
+      return alert(`По вашому запиту ${searchQury} нічого не знайдено`);
+
+
+      
+    }
+
+
+
+
+
+    refs.gallery.innerHTML = createGalleryCard(resp.data.results);
+    pagination.reset(resp.data.total);
+    pagination.off('afterMove', createPopularPagination);
+    pagination.on('afterMove', createPaginationByQuery);
+  }catch(error) {
+    console.log(error);
+  }  
+ }
+
+ async function createPaginationByQuery(evt) {
+  const currentPage = evt.page;
+
+   try {
+    const resp = await unsplashApi.getPhotosByQuery(currentPage)
+ 
+    refs.gallery.innerHTML = createGalleryCard(resp.data.results);
+    
+  }catch(error) {
+    console.log(error);
+  } 
+
+ }
+
 /**
   |============================
   | Імпортуй свою API і напиши фу-цію "onRenderPage()", яка буде робити запит на сервер і вона ж відрендерить розмітку. Пробуй використовувати модульний підхід
