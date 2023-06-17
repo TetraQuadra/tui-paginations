@@ -1,21 +1,21 @@
 {
-  "name": "goit-js-hw-08",
+  "name": "tui-paginations",
   "version": "2.0.0",
   "description": "",
-  "homepage": "https://tetraquadra.github.io/goit-js-hw-08",
+  "homepage": "https://tetraquadra.github.io/tui-paginations",
   "scripts": {
     "start": "parcel src/*.html",
-    "build": "parcel build src/*.html --public-url /goit-js-hw-08/"
+    "build": "parcel build src/*.html --public-url /tui-paginations/"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tetraquadra/goit-js-hw-08.git"
+    "url": "git+https://github.com/tetraquadra/tui-paginations.git"
   },
   "keywords": [],
   "author": "Alexander Repeta <alexander.repeta@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/tetraquadra/goit-js-hw-08/issues"
+    "url": "https://github.com/tetraquadra/tui-paginations/issues"
   },
   "dependencies": {
     "@vimeo/player": "^2.20.1",
